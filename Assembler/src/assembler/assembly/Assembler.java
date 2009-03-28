@@ -69,6 +69,8 @@ public class Assembler {
 
             int end = word.length();
 
+            logger.debug("parsing line " + lineNumber);
+
             if(word.charAt(end - 1) == ':'){
                 labelWord = new String(word);
                 logger.debug("Encountered a label " + labelWord);
@@ -97,14 +99,6 @@ public class Assembler {
 
                 instr = new AddInstruction(rs, rt, rd);
             }
-            /*else if(instructionWord.equalsIgnoreCase("addi")){
-                rs = lineScanner.next();
-                rt = lineScanner.next();
-                imm = lineScanner.next();
-
-                instr = new AddImmediateInstruction(rs, rt, imm);
-
-            }*/
             else if(instructionWord.equalsIgnoreCase("and")){
                 rs = lineScanner.next();
                 rt = lineScanner.next();
@@ -168,14 +162,6 @@ public class Assembler {
                 instr = new SetLessThanInstruction(rs, rt, rd);
 
             }
-            /*else if(instructionWord.equalsIgnoreCase("slti")){
-                rs = lineScanner.next();
-                rt = lineScanner.next();
-                imm = lineScanner.next();
-
-                instr = new ImmediateInstruction(rs, rt, imm);
-
-            }*/
             else if(instructionWord.equalsIgnoreCase("sw")){
                 rs = lineScanner.next();
                 addr = lineScanner.next();
@@ -197,6 +183,7 @@ public class Assembler {
             instructions.add(instr);
         }
 
+        logger.debug("Finished parsing file");
         return instructions;
     }
 
@@ -216,15 +203,21 @@ public class Assembler {
         return work();
     }
 
-	 public void writeBinaryToFile(File f, Vector<Instruction> v) throws IOException {
+	 public void writeBinaryToFile(File f, Vector<Instruction> v) throws Exception {
 
 	 	  FileWriter output = new FileWriter(f);
-
-          Iterator<Instruction> iter = v.iterator();
-          while(iter.hasNext()) {
-              Instruction instr = iter.next();
-              output.write(instr.getBinary() + ",\n");
+          output.write("starting parsing\n\n");
+          try {
+              Iterator<Instruction> iter = v.iterator();
+              while(iter.hasNext()) {
+                  Instruction instr = iter.next();
+                  output.write(instr.getBinary() + ",\n");
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+              logger.error("An error has occurred while printing the binary to file " + e.getMessage());
+          } finally {
+              output.close();
           }
-          output.close();
 	 }
 }

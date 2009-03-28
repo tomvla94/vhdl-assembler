@@ -1,5 +1,7 @@
 package assembler.instruction;
 
+import assembler.exception.NonConvertibleStringException;
+
 /**
  *
  * @author Billy Watson
@@ -9,8 +11,9 @@ public abstract class ItypeAbstractInstruction extends HasRsAndRt {
 
     public ItypeAbstractInstruction() {}
 
-    public ItypeAbstractInstruction(String rs, String immediate) {
-        setRs(rs);
+    public ItypeAbstractInstruction(String rt, String immediate) {
+        setRs("00000");
+        setRt(rt);
         setImmediate(immediate);
     }
 
@@ -28,7 +31,7 @@ public abstract class ItypeAbstractInstruction extends HasRsAndRt {
         this.immediate = immediate;
     }
 
-    public String getBinary() {
-        return getOpcode() + getRs() + getRt() + getImmediate();
+    public String getBinary() throws NonConvertibleStringException {
+        return getOpcode() + asBinary(getRs(), 5) + asBinary(getRt(), 5) + asBinary(getImmediate(), 16);
     }
 }
