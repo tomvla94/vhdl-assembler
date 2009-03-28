@@ -4,7 +4,6 @@ import assembler.assembly.Assembler;
 import assembler.exception.InitializationException;
 import assembler.instruction.Instruction;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.AccessException;
 import java.util.Vector;
@@ -26,7 +25,7 @@ public class AssemblerMain {
      * <i>inputFilename</i> <i>outputFilename</i>
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InitializationException, IOException {
+    public static void main(String[] args) throws Exception {
         final int length = args.length;
 
         if (length > 2) {

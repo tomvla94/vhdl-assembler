@@ -1,5 +1,7 @@
 package assembler.instruction;
 
+import assembler.exception.NonConvertibleStringException;
+
 /**
  *
  * @author Billy Watson
@@ -41,7 +43,7 @@ public abstract class RtypeAbstractInstruction extends HasRsAndRt {
         this.shamt = shamt;
     }
 
-    public String getBinary() {
-        return getOpcode() + getRs() + getRt() + getRd() + getShamt() + getFunctionCode();
+    public String getBinary() throws NonConvertibleStringException {
+        return getOpcode() + asBinary(getRs(), 5) + asBinary(getRt(), 5) + asBinary(getRd(), 5) + getShamt() + getFunctionCode();
     }
 }
