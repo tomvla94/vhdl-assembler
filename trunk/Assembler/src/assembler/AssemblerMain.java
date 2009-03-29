@@ -4,7 +4,6 @@ import assembler.assembly.Assembler;
 import assembler.exception.InitializationException;
 import assembler.instruction.Instruction;
 import java.io.File;
-import java.io.IOException;
 import java.rmi.AccessException;
 import java.util.Vector;
 

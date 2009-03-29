@@ -10,8 +10,8 @@ package assembler.instruction;
  * @author Billy Watson
  */
 public abstract class HasRsAndRt extends Instruction {
-    protected String rs;
-    protected String rt;
+    private String rs;
+    private String rt;
 
     public String getRs() {
         return rs;

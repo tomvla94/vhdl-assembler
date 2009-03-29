@@ -22,9 +22,9 @@ import org.apache.log4j.Logger;
  * @author Billy Watson
  */
 public abstract class Instruction {
-    protected String label;
-    protected String opcode = "000000";
-    protected String function = "";
+    private String label;
+    private String opcode = "000000";
+    private String function = "";
     Logger logger = Logger.getLogger(Instruction.class);
 
     public String getFunction() {

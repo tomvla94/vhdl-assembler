@@ -6,9 +6,7 @@ import assembler.exception.NonConvertibleStringException;
  *
  * @author Billy Watson
  */
-public abstract class ItypeAbstractInstruction extends HasRsAndRt {
-    protected String immediate;
-
+public abstract class ItypeAbstractInstruction extends HasRsRtAndImmediate {
     public ItypeAbstractInstruction() {}
 
     public ItypeAbstractInstruction(String rt, String immediate) {
@@ -21,14 +19,6 @@ public abstract class ItypeAbstractInstruction extends HasRsAndRt {
         setRs(rs);
         setRt(rt);
         setImmediate(immediate);
-    }
-
-    public String getImmediate() {
-        return immediate;
-    }
-
-    public void setImmediate(String immediate) {
-        this.immediate = immediate;
     }
 
     public String getBinary() throws NonConvertibleStringException {
