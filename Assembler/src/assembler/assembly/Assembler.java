@@ -192,7 +192,7 @@ public class Assembler {
                 //could possibly have a symbol, so replace immediate if a symbol exists
                 HasRsRtAndImmediate instrWithImmediate = (HasRsRtAndImmediate) instr;
                 int lineNumOfSymbol = symbolizer.lookup(instrWithImmediate.getImmediate());
-                int address = 256 - lineNumber - lineNumOfSymbol;
+                int address = 257 - (lineNumber - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
                 logger.debug("**Setting immediate value to " + address);
                 instrWithImmediate.setImmediate(Integer.toString(address));
             }
@@ -221,14 +221,21 @@ public class Assembler {
     }
 
 	 public void writeBinaryToFile(File f, Vector<Instruction> v) throws Exception {
-
 	 	  FileWriter output = new FileWriter(f);
-          output.write("starting parsing\n\n");
+          output.write("MEMORY_INITIALIZATION_RADIX=2;\n");
+          output.write("MEMORY_INITIALIZATION_VECTOR=\n");
           try {
               Iterator<Instruction> iter = v.iterator();
               while(iter.hasNext()) {
                   Instruction instr = iter.next();
-                  output.write(instr.getBinary() + ",\n");
+                  output.write(instr.getBinary());
+                  /* don't write a new line and a comma unless we have more
+                        of a memory vector to write to the file */
+                  if(iter.hasNext()) {
+                      output.write(",\n");
+                  } else {
+                      //output.write(";");
+                  }
               }
           } catch (Exception e) {
               e.printStackTrace();
