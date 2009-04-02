@@ -17,7 +17,6 @@ import assembler.instruction.StoreWordInstruction;
 import assembler.instruction.SubtractInstruction;
 import assembler.symbolize.Symbolizer;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.security.InvalidParameterException;
 import java.util.Iterator;
@@ -193,6 +192,10 @@ public class Assembler {
                 HasRsRtAndImmediate instrWithImmediate = (HasRsRtAndImmediate) instr;
                 int lineNumOfSymbol = symbolizer.lookup(instrWithImmediate.getImmediate());
                 int address = 257 - (lineNumber - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
+                //not sure why this is necessary, but jump addresses are off by 1
+                if(instructionWord.equals("jump")) {
+                    address--;
+                }
                 logger.debug("**Setting immediate value to " + address);
                 instrWithImmediate.setImmediate(Integer.toString(address));
             }
@@ -220,22 +223,27 @@ public class Assembler {
         return work();
     }
 
-	 public void writeBinaryToFile(File f, Vector<Instruction> v) throws Exception {
-	 	  FileWriter output = new FileWriter(f);
+	 public void writeBinaryToFile(File out, Vector<Instruction> v, File in) throws Exception {
+	 	  FileWriter output = new FileWriter(out);
+          Scanner input = new Scanner(in);
           output.write("MEMORY_INITIALIZATION_RADIX=2;\n");
           output.write("MEMORY_INITIALIZATION_VECTOR=\n");
           try {
               Iterator<Instruction> iter = v.iterator();
+              int ct = 0;
               while(iter.hasNext()) {
                   Instruction instr = iter.next();
                   output.write(instr.getBinary());
                   /* don't write a new line and a comma unless we have more
                         of a memory vector to write to the file */
                   if(iter.hasNext()) {
-                      output.write(",\n");
+                      output.write(",");
+                      //output.write("\n");
                   } else {
                       //output.write(";");
                   }
+                  //output.write(" " + input.nextLine() + "\n");
+                  output.write(" " + (ct++) + "\n");
               }
           } catch (Exception e) {
               e.printStackTrace();
