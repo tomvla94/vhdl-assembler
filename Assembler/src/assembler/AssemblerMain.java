@@ -3,8 +3,8 @@ package assembler;
 import assembler.assembly.Assembler;
 import assembler.exception.InitializationException;
 import assembler.instruction.Instruction;
+import assembler.optimize.Optimizer;
 import java.io.File;
-import java.io.FileWriter;
 import java.rmi.AccessException;
 import java.util.Vector;
 
@@ -42,12 +42,15 @@ public class AssemblerMain {
 
             Vector<Instruction> instructions = assembler.work();
 
+            Optimizer optimizer = new Optimizer(instructions);
+            instructions = optimizer.work();
+
             outputFile.createNewFile(); //only creates if it doesn't exist
             if(outputFile.canWrite()) {
-                assembler.writeBinaryToFile(outputFile, instructions);
+                assembler.writeBinaryToFile(outputFile, instructions, inputFile);
 
-                System.out.println("Assembly complete. You may now check the " +
-                        "output file for your binary code");
+                System.out.println("Assembly complete. You may now check " +
+                        OUTPUT_FILE_NAME + " for your binary code");
             } else {
                 throw new AccessException("Cannot write to specified output file");
             }

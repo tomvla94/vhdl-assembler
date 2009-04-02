@@ -6,14 +6,14 @@ import assembler.exception.NonConvertibleStringException;
  *
  * @author Billy Watson
  */
-public abstract class RtypeAbstractInstruction extends HasRsAndRt {
+public abstract class RtypeInstruction extends HasRsAndRt {
     private String rd;
     private String funct;
     private String shamt = "00000";
 
-    public RtypeAbstractInstruction(){}
+    public RtypeInstruction(){}
 
-    public RtypeAbstractInstruction(String rs, String rt, String rd) {
+    public RtypeInstruction(String rs, String rt, String rd) {
         setRs(rs);
         setRt(rt);
         setRd(rd);

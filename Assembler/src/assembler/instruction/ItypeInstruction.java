@@ -6,16 +6,16 @@ import assembler.exception.NonConvertibleStringException;
  *
  * @author Billy Watson
  */
-public abstract class ItypeAbstractInstruction extends HasRsRtAndImmediate {
-    public ItypeAbstractInstruction() {}
+public abstract class ItypeInstruction extends HasRsRtAndImmediate {
+    public ItypeInstruction() {}
 
-    public ItypeAbstractInstruction(String rt, String immediate) {
+    public ItypeInstruction(String rt, String immediate) {
         setRs("00000");
         setRt(rt);
         setImmediate(immediate);
     }
 
-    public ItypeAbstractInstruction(String rs, String rt, String immediate) {
+    public ItypeInstruction(String rs, String rt, String immediate) {
         setRs(rs);
         setRt(rt);
         setImmediate(immediate);

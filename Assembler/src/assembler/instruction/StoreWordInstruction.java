@@ -4,7 +4,7 @@ package assembler.instruction;
  *
  * @author Billy Watson
  */
-public class StoreWordInstruction extends ItypeAbstractInstruction {
+public class StoreWordInstruction extends ItypeInstruction {
     public StoreWordInstruction(String rs, String immediate) {
         super(rs, immediate);
         setOpcode("000010");
