@@ -191,11 +191,7 @@ public class Assembler {
                 //could possibly have a symbol, so replace immediate if a symbol exists
                 HasRsRtAndImmediate instrWithImmediate = (HasRsRtAndImmediate) instr;
                 int lineNumOfSymbol = symbolizer.lookup(instrWithImmediate.getImmediate());
-                int address = 257 - (lineNumber - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
-                //not sure why this is necessary, but jump addresses are off by 1
-                if(instructionWord.equals("jump")) {
-                    address--;
-                }
+                int address = 256 - (lineNumber - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
                 logger.debug("**Setting immediate value to " + address);
                 instrWithImmediate.setImmediate(Integer.toString(address));
             }

@@ -9,7 +9,6 @@ import java.util.Vector;
 import java.util.Iterator;
 import org.apache.log4j.Logger;
 
-
 /**
  *
  * @author Jonathan Paik
@@ -27,7 +26,7 @@ public class Optimizer {
 
     public Vector<Instruction> work() throws Exception {
         Vector<Instruction> optimizedInstructions = new Vector<Instruction>(100,10);
-        Iterator iter = instructions.iterator();
+        Iterator<Instruction> iter = instructions.iterator();
         int count = 0;
         String rs = "";
         String rt = "";
@@ -42,7 +41,7 @@ public class Optimizer {
             logger.debug("optimizer loop iteration " + count);
 
             Instruction[] inst = new Instruction[5];
-            inst[0] = (Instruction) iter.next();
+            inst[0] = iter.next();
             final String fnctn = inst[0].getFunction();
 
             logger.debug("Instruction function (outer loop) is [" + fnctn + "]");
@@ -61,9 +60,9 @@ public class Optimizer {
             }
             catch(ArrayIndexOutOfBoundsException e) {
                 logger.error(e);
+                continue;
             }
 
-            
             if(fnctn.equals("bne") || fnctn.equals("beq") || fnctn.equals("jump")) {
                 optimizedInstructions.add(new NopInstruction());
                 optimizedInstructions.add(new NopInstruction());
