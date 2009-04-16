@@ -7,7 +7,7 @@ package assembler.instruction;
 public class LoadWordInstruction extends ItypeInstruction {
 
     public LoadWordInstruction(String rt, String immediate) {
-        super(rt,immediate);
+        super(rt, immediate);
         setOpcode("000001");
         setFunction("lw");
     }
