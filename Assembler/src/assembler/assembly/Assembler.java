@@ -141,16 +141,16 @@ public class Assembler {
                 instr = new JumpInstruction(addr);
             }
             else if(instructionWord.equals("lui")){
-                rs = lineScanner.next();
+                rt = lineScanner.next();
                 imm = lineScanner.next();
 
-                instr = new LoadUpperImmediateInstruction(rs, imm);
+                instr = new LoadUpperImmediateInstruction(rt, imm);
             }
             else if(instructionWord.equals("lw")){
-                rs = lineScanner.next();
+                rt = lineScanner.next();
                 addr = lineScanner.next();
 
-                instr = new LoadWordInstruction(rs, addr);
+                instr = new LoadWordInstruction(rt, addr);
             }
             else if(instructionWord.equals("nop")){
                 instr = new NopInstruction();
@@ -221,7 +221,9 @@ public class Assembler {
 
 	 public void writeBinaryToFile(File out, Vector<Instruction> v, File in) throws Exception {
 	 	  FileWriter output = new FileWriter(out);
+
           Scanner input = new Scanner(in);
+          Scanner binary = new Scanner(new File("/Users/williamwatson/desktop/properoutput.txt"));
           output.write("MEMORY_INITIALIZATION_RADIX=2;\n");
           output.write("MEMORY_INITIALIZATION_VECTOR=\n");
           try {
@@ -234,12 +236,15 @@ public class Assembler {
                         of a memory vector to write to the file */
                   if(iter.hasNext()) {
                       output.write(",");
-                      //output.write("\n");
                   } else {
                       //output.write(";");
                   }
-                  //output.write(" " + input.nextLine() + "\n");
-                  output.write(" " + (ct++) + "\n");
+                  output.write("\n");
+                  if(binary.hasNext()) {
+                      //output.write(binary.nextLine() + "\n");
+                      //output.write(input.nextLine() + "\n");
+                  }
+                  //output.write(" " + (ct++) + "\n");
               }
           } catch (Exception e) {
               e.printStackTrace();
