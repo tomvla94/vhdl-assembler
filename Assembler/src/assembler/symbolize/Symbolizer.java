@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
  */
 public class Symbolizer {
     Map<String, Integer> symbols = new HashMap<String, Integer>();
+    Map<Integer, String> symbolsAtLine = new HashMap<Integer, String>();
     Logger logger = Logger.getLogger(Symbolizer.class);
     /**
      * 
@@ -20,6 +21,7 @@ public class Symbolizer {
     public void insert(String label, int line) {
         logger.debug("Inserting symbol " + label + " found at line " + line);
         symbols.put(label, line);
+        symbolsAtLine.put(line, label);
     }
 
     /**
@@ -36,5 +38,23 @@ public class Symbolizer {
         } else {
             throw new SymbolNotFoundException(label);
         }
+    }
+
+    /**
+     * Looks for a label at a line number.
+     * @param lineNumber
+     * @return null if no label found, otherwise returns the label
+     */
+    public String lookup(int lineNumber) {
+        String label = null;
+        logger.debug("Looking for a symbol on line " + lineNumber);
+        if(symbolsAtLine.containsKey(lineNumber)) {
+            label = symbolsAtLine.get(lineNumber);
+            logger.debug("Label found at " + lineNumber + " : " + label);
+        } else {
+            logger.debug("No symbol found at line number " + lineNumber);
+        }
+
+        return label;
     }
 }
