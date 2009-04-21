@@ -55,30 +55,33 @@ public class Assembler {
         Symbolizer symbolizer = new Symbolizer();
 
         String instructionWord;
-        String labelWord;
+        String labelWord = null;
 
         Scanner fileScanner = new Scanner(inputFile);
 
         logger.info("Starting work of assembly");
 
         // -- first pass, just to pull out all label positions and place in symbols table
+        int i = 0;
         while(fileScanner.hasNext()){
             String s = new String(fileScanner.nextLine());
             Scanner lineScanner = new Scanner(s);
 
-            int lineNumber = lineScanner.nextInt();
+            int lineNumber = lineScanner.nextInt(); //move pointer past line #; won't use line number later
             String word = new String(lineScanner.next());
             int end = word.length() - 1;
 
-            if(word.charAt(end) == ':'){
+            if(word.charAt(end) == ':') {
                 labelWord = word.substring(0, end);
                 logger.debug("Encountered a label " + labelWord);
-                symbolizer.insert(labelWord, lineNumber);
+                symbolizer.insert(labelWord, i);
             }
+            i++;
         }
 
         // -- second pass, does all the grunt work and looks up symbols in the symbols table
         fileScanner = new Scanner(inputFile); //re-initialize scanner for second pass
+        i=0;
         while(fileScanner.hasNext()){
             String s = new String(fileScanner.nextLine());
             Scanner lineScanner = new Scanner(s);
@@ -108,16 +111,16 @@ public class Assembler {
 
             //comparing the instruction word with a list of MIPS instructions
             if(instructionWord.equals("add")){
+                rd = lineScanner.next();
                 rs = lineScanner.next();
                 rt = lineScanner.next();
-                rd = lineScanner.next();
 
                 instr = new AddInstruction(rs, rt, rd);
             }
             else if(instructionWord.equals("and")){
+                rd = lineScanner.next();
                 rs = lineScanner.next();
                 rt = lineScanner.next();
-                rd = lineScanner.next();
 
                 instr = new AndInstruction(rs, rt, rd);
             }
@@ -156,16 +159,16 @@ public class Assembler {
                 instr = new NopInstruction();
             }
             else if(instructionWord.equals("or")){
+                rd = lineScanner.next();
                 rs = lineScanner.next();
                 rt = lineScanner.next();
-                rd = lineScanner.next();
 
                 instr = new OrInstruction(rs, rt, rd);
             }
             else if(instructionWord.equals("slt")){
+                rd = lineScanner.next();
                 rs = lineScanner.next();
                 rt = lineScanner.next();
-                rd = lineScanner.next();
 
                 instr = new SetLessThanInstruction(rs, rt, rd);
             }
@@ -176,47 +179,24 @@ public class Assembler {
                 instr = new StoreWordInstruction(rs, addr);
             }
             else if(instructionWord.equals("sub")){
+                rd = lineScanner.next();
                 rs = lineScanner.next();
                 rt = lineScanner.next();
-                rd = lineScanner.next();
 
                 instr = new SubtractInstruction(rs, rt, rd);
             } else {
                 throw new UnrecognizedInstructionException(instructionWord);
             }
 
-            if(instructionWord.equals("jump") ||
-                    instructionWord.equals("bne") ||
-                    instructionWord.equals("beq")/* && addr != null*/) {
-                //could possibly have a symbol, so replace immediate if a symbol exists
-                HasRsRtAndImmediate instrWithImmediate = (HasRsRtAndImmediate) instr;
-                int lineNumOfSymbol = symbolizer.lookup(instrWithImmediate.getImmediate());
-                int address = 256 - (lineNumber - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
-                logger.debug("**Setting immediate value to " + address);
-                instrWithImmediate.setImmediate(Integer.toString(address));
-            }
 
+            String labelAtLine = symbolizer.lookup(i);
+            instr.setLabel(labelAtLine);
             instructions.add(instr);
+            i++;
         }
 
         logger.debug("Finished parsing file");
         return instructions;
-    }
-
-    /**
-     * Does the work and sets the inputFile
-     *
-     * @param inputFile
-     * @return
-     * @throws java.security.InvalidParameterException
-     */
-    public Vector<Instruction> work(File inputFile) throws Exception {
-        if(inputFile == null)
-            throw new InvalidParameterException("inputFile cannot be null");
-
-        this.inputFile = inputFile;
-
-        return work();
     }
 
 	 public void writeBinaryToFile(File out, Vector<Instruction> v, File in) throws Exception {

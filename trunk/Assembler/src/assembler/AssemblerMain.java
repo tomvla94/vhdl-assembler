@@ -2,10 +2,13 @@ package assembler;
 
 import assembler.assembly.Assembler;
 import assembler.exception.InitializationException;
+import assembler.instruction.HasRsRtAndImmediate;
 import assembler.instruction.Instruction;
 import assembler.optimize.Optimizer;
+import assembler.symbolize.Symbolizer;
 import java.io.File;
 import java.rmi.AccessException;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -38,12 +41,47 @@ public class AssemblerMain {
 
             File inputFile = new File(args[0]);
             File outputFile = new File(OUTPUT_FILE_NAME);
+            Symbolizer symbolizer = new Symbolizer();
             Assembler assembler = new Assembler(inputFile);
 
             Vector<Instruction> instructions = assembler.work();
 
             Optimizer optimizer = new Optimizer(instructions);
             instructions = optimizer.work();
+
+            //put labels into a new symbols table for lookup after optimization
+            Iterator<Instruction> iter1 = instructions.iterator();
+            int i=0;
+            while(iter1.hasNext()) {
+                Instruction instr = iter1.next();
+
+                if(instr.getLabel() != null) {
+                    String label = instr.getLabel();
+                    symbolizer.insert(label, i);
+                }
+                i++;
+            }
+
+            //lookup symbols, if appropriate
+            Iterator<Instruction> iter2 = instructions.iterator();
+            i=0;
+            while(iter2.hasNext()) {
+                Instruction instr = iter2.next();
+                String function = instr.getFunction();
+
+                if(function.equals("jump") ||
+                        function.equals("bne") ||
+                        function.equals("beq")/* && addr != null*/) {
+                    //could possibly have a symbol, so replace immediate if a symbol exists
+                    HasRsRtAndImmediate instrWithImmediate = (HasRsRtAndImmediate) instr;
+                    int lineNumOfSymbol = symbolizer.lookup(instrWithImmediate.getImmediate());
+                    int address = 256 - (i - lineNumOfSymbol);//requires a 0-based line numbering to be accurate
+                    System.out.println("**Setting immediate value to " + address);
+                    instrWithImmediate.setImmediate(Integer.toString(address));
+                }
+
+                i++;
+            }
 
             outputFile.createNewFile(); //only creates if it doesn't exist
             if(outputFile.canWrite()) {
