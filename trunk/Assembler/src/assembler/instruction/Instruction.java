@@ -74,11 +74,11 @@ public abstract class Instruction {
                 decimalString = nonBinaryString;
             }
             long decimal = Long.parseLong(decimalString);
-            logger.debug("decimal number is " + decimal + " from " + nonBinaryString);
+            //logger.debug("decimal number is " + decimal + " from " + nonBinaryString);
 
             String binary = Long.toBinaryString(decimal).trim();
             String paddedBinary = String.format("%1$#" + digits + "s", binary).replace(' ','0');
-            logger.debug("binary is " + paddedBinary + " from decimal " + decimal);
+            //logger.debug("binary is " + paddedBinary + " from decimal " + decimal);
             return paddedBinary;
         } catch(Exception e) {
             e.printStackTrace();
