@@ -73,6 +73,8 @@ public class Optimizer {
             } */else if(fnctn.equals("lw") || fnctn.equals("lui")) {
                 HasRsAndRt i = (HasRsAndRt) current;
                 rd = i.getRt();
+            } else {
+                continue;
             }
 
             for(int x = 0; x < lookAheadCount; x++) {
