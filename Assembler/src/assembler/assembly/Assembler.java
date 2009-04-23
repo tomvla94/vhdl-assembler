@@ -73,7 +73,7 @@ public class Assembler {
 
             if(word.charAt(end) == ':') {
                 labelWord = word.substring(0, end);
-                logger.debug("Encountered a label " + labelWord);
+                //logger.debug("Encountered a label " + labelWord);
                 symbolizer.insert(labelWord, i);
             }
             i++;
@@ -91,7 +91,7 @@ public class Assembler {
 
             int end = word.length();
 
-            logger.debug("parsing line " + lineNumber);
+            //logger.debug("parsing line " + lineNumber);
 
             if(word.charAt(end - 1) == ':'){
                 instructionWord = new String(lineScanner.next());
@@ -99,7 +99,7 @@ public class Assembler {
                 instructionWord = word;
             }
             instructionWord = instructionWord.toLowerCase();
-            logger.debug("Encountered an instruction " + instructionWord);
+            //logger.debug("Encountered an instruction " + instructionWord);
 
             Instruction instr = null; //creating an instruction to add
                                               //the instruction vector
@@ -195,36 +195,25 @@ public class Assembler {
             i++;
         }
 
-        logger.debug("Finished parsing file");
+        logger.info("Finished parsing file");
         return instructions;
     }
 
 	 public void writeBinaryToFile(File out, Vector<Instruction> v, File in) throws Exception {
 	 	  FileWriter output = new FileWriter(out);
 
-          Scanner input = new Scanner(in);
-          Scanner binary = new Scanner(new File("/Users/williamwatson/desktop/properoutput.txt"));
           output.write("MEMORY_INITIALIZATION_RADIX=2;\n");
           output.write("MEMORY_INITIALIZATION_VECTOR=\n");
           try {
               Iterator<Instruction> iter = v.iterator();
-              int ct = 0;
               while(iter.hasNext()) {
                   Instruction instr = iter.next();
                   output.write(instr.getBinary());
                   /* don't write a new line and a comma unless we have more
                         of a memory vector to write to the file */
                   if(iter.hasNext()) {
-                      output.write(",");
-                  } else {
-                      //output.write(";");
-                  }
-                  output.write("\n");
-                  if(binary.hasNext()) {
-                      //output.write(binary.nextLine() + "\n");
-                      //output.write(input.nextLine() + "\n");
-                  }
-                  //output.write(" " + (ct++) + "\n");
+                      output.write(",\n");
+                  }   
               }
           } catch (Exception e) {
               e.printStackTrace();
