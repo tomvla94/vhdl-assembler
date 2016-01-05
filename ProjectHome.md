@@ -1,0 +1,1 @@
+This VHDL assembler will be optimized to make the most of the VHDL pipelining in order to produce a perfect program.
